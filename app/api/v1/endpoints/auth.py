@@ -9,12 +9,18 @@ from app.models.user import (
 )
 from app.services.auth_service import auth_service
 from app.core.security import decode_token
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+# Create a shared limiter
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 security = HTTPBearer()
 
 
 @router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("5/minute")
 async def register(user_data: UserRegister):
     """
     Register a new user
@@ -27,6 +33,7 @@ async def register(user_data: UserRegister):
 
 
 @router.post("/login", response_model=TokenResponse)
+@limiter.limit("10/minute")
 async def login(credentials: UserLogin):
     """
     Login with email and password
@@ -37,6 +44,7 @@ async def login(credentials: UserLogin):
 
 
 @router.post("/refresh", response_model=TokenResponse)
+@limiter.limit("5/minute")
 async def refresh_token(request: RefreshTokenRequest):
     """
     Refresh access token using refresh token
@@ -45,6 +53,7 @@ async def refresh_token(request: RefreshTokenRequest):
 
 
 @router.get("/me", response_model=UserResponse)
+@limiter.limit("5/minute")
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     Get current authenticated user details
@@ -65,6 +74,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 
 @router.post("/logout")
+@limiter.limit("5/minute")
 async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     Logout user (client should delete tokens)
