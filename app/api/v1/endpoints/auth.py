@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.models.user import (
     UserRegister,
@@ -21,7 +21,7 @@ security = HTTPBearer()
 
 @router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
 @limiter.limit("5/minute")
-async def register(user_data: UserRegister):
+async def register(request: Request, user_data: UserRegister):
     """
     Register a new user
 
@@ -34,7 +34,7 @@ async def register(user_data: UserRegister):
 
 @router.post("/login", response_model=TokenResponse)
 @limiter.limit("10/minute")
-async def login(credentials: UserLogin):
+async def login(request: Request, credentials: UserLogin):
     """
     Login with email and password
 
@@ -44,7 +44,7 @@ async def login(credentials: UserLogin):
 
 
 @router.post("/refresh", response_model=TokenResponse)
-@limiter.limit("5/minute")
+# @limiter.limit("5/minute")
 async def refresh_token(request: RefreshTokenRequest):
     """
     Refresh access token using refresh token
@@ -54,7 +54,7 @@ async def refresh_token(request: RefreshTokenRequest):
 
 @router.get("/me", response_model=UserResponse)
 @limiter.limit("5/minute")
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def get_current_user(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     Get current authenticated user details
 
@@ -75,7 +75,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 @router.post("/logout")
 @limiter.limit("5/minute")
-async def logout(credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def logout(request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)):
     """
     Logout user (client should delete tokens)
     """
