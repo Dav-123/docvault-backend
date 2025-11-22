@@ -82,8 +82,8 @@ class AuthService:
 
     @staticmethod
     async def login_user(credentials: UserLogin) -> TokenResponse:
-    """Login user - Updated for Appwrite 4.1.0+"""
-       try:
+        """Login user - Updated for Appwrite 4.1.0+"""
+        try:
 
             session = account.create_session(
                 user_id=ID.unique(),
