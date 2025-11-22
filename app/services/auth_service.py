@@ -25,10 +25,10 @@ class AuthService:
             )
 
             # Create user document in database
-            user_doc = databases.create_document(
+            user_doc = databases.create_Row(
                 database_id=settings.APPWRITE_DATABASE_ID,
-                collection_id=settings.COLLECTION_USERS,
-                document_id=user_id,
+                table_id=settings.COLLECTION_USERS,
+                row_id=user_id,
                 data={
                     "email": user_data.email,
                     "name": user_data.name,
@@ -85,18 +85,17 @@ class AuthService:
         """Login user - Updated for Appwrite 4.1.0+"""
         try:
 
-            session = account.create_session(
-                user_id=ID.unique(),
+            session = account.createEmailPasswordSession(
                 email=credentials.email,
                 password=credentials.password
             )
 
             user_id = session['userId']
 
-            user_doc = databases.get_document(
+            user_doc = databases.get_Row(
                 database_id=settings.APPWRITE_DATABASE_ID,
-                collection_id=settings.COLLECTION_USERS,
-                document_id=user_id
+                table_id=settings.COLLECTION_USERS,
+                row_id=user_id
             )
 
             token_data = {"sub": user_id, "email": credentials.email}
@@ -134,10 +133,10 @@ class AuthService:
     async def get_current_user(user_id: str) -> UserResponse:
         """Get current user details"""
         try:
-            user_doc = databases.get_document(
+            user_doc = databases.get_Row(
                 database_id=settings.APPWRITE_DATABASE_ID,
-                collection_id=settings.COLLECTION_USERS,
-                document_id=user_id
+                table_id=settings.COLLECTION_USERS,
+                row_id=user_id
             )
 
             return UserResponse(
