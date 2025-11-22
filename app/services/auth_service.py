@@ -82,24 +82,23 @@ class AuthService:
 
     @staticmethod
     async def login_user(credentials: UserLogin) -> TokenResponse:
-        """Login user"""
-        try:
-            # Create session with Appwrite
-            session = account.create_email_session(
+    """Login user - Updated for Appwrite 4.1.0+"""
+       try:
+
+            session = account.create_session(
+                user_id=ID.unique(),
                 email=credentials.email,
                 password=credentials.password
             )
 
             user_id = session['userId']
 
-            # Get user document
             user_doc = databases.get_document(
                 database_id=settings.APPWRITE_DATABASE_ID,
                 collection_id=settings.COLLECTION_USERS,
                 document_id=user_id
             )
 
-            # Generate tokens
             token_data = {"sub": user_id, "email": credentials.email}
             access_token = create_access_token(token_data)
             refresh_token = create_refresh_token(token_data)
@@ -121,9 +120,14 @@ class AuthService:
             )
 
         except AppwriteException as e:
+            if "invalid_credentials" in str(e).lower() or "user_not_found" in str(e).lower():
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid email or password"
+                )
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid email or password"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Login failed"
             )
 
     @staticmethod
