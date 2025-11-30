@@ -16,6 +16,12 @@ class AuthService:
             # Create Appwrite account
             user_id = ID.unique()
 
+            try:
+                account.delete_sessions()
+            
+            except:
+                pass
+
             # Create account in Appwrite Auth
             appwrite_user = account.create(
                 user_id=user_id,
@@ -85,7 +91,7 @@ class AuthService:
         """Login user - Updated for Appwrite 4.1.0+"""
         try:
 
-            session = account.createEmailPasswordSession(
+            session = account.create_email_password_session(
                 email=credentials.email,
                 password=credentials.password
             )
