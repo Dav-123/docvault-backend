@@ -2,7 +2,7 @@ from appwrite.client import Client
 from appwrite.services.account import Account
 from appwrite.services.databases import Databases
 from appwrite.services.storage import Storage
-from appwrite.services.tables import Tables
+from appwrite.services.tablesdb import TablesDB
 from appwrite.services.users import Users
 from app.config import settings
 
@@ -16,7 +16,7 @@ client.set_key(settings.APPWRITE_API_KEY)
 account = Account(client)
 users = Users(client)
 databases = Databases(client)
-tables = Tables(client)
+tablesdb = TablesDB(client)
 storage = Storage(client)
 
 
@@ -35,9 +35,9 @@ def get_databases():
     return databases
 
 
-def get_tables():
+def get_tablesdb():
     """Get Appwrite table instance"""
-    return tables
+    return tablesdb
 
 
 def get_account():

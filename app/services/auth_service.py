@@ -2,7 +2,7 @@ from typing import Dict, Any
 from fastapi import HTTPException, status
 from appwrite.exception import AppwriteException
 from appwrite.id import ID
-from app.core.appwrite import databases, tables, users, account, get_appwrite_client
+from app.core.appwrite import databases, tablesdb, users, account, get_appwrite_client
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token
 from app.models.user import UserRegister, UserLogin, UserResponse, TokenResponse
 from app.config import settings
@@ -31,7 +31,7 @@ class AuthService:
             )
 
             # Create user document in database
-            user_doc = tables.create_Row(
+            user_doc = tablesdb.create_Row(
                 database_id=settings.APPWRITE_DATABASE_ID,
                 table_id=settings.COLLECTION_USERS,
                 row_id=user_id,
@@ -98,7 +98,7 @@ class AuthService:
 
             user_id = session['userId']
 
-            user_doc = tables.get_Row(
+            user_doc = tablesdb.get_Row(
                 database_id=settings.APPWRITE_DATABASE_ID,
                 table_id=settings.COLLECTION_USERS,
                 row_id=user_id
@@ -139,7 +139,7 @@ class AuthService:
     async def get_current_user(user_id: str) -> UserResponse:
         """Get current user details"""
         try:
-            user_doc = tables.get_Row(
+            user_doc = tablesdb.get_Row(
                 database_id=settings.APPWRITE_DATABASE_ID,
                 table_id=settings.COLLECTION_USERS,
                 row_id=user_id
