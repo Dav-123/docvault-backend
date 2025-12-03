@@ -2,7 +2,7 @@ from appwrite.client import Client
 from appwrite.services.account import Account
 from appwrite.services.databases import Databases
 from appwrite.services.storage import Storage
-from appwrite.services.tablesdb import TablesDB
+from appwrite.services.tables_db import TablesDB
 from appwrite.services.users import Users
 from app.config import settings
 
