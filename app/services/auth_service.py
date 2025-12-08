@@ -31,7 +31,7 @@ class AuthService:
             )
 
             # Create user document in database
-            user_doc = tablesdb.create_Row(
+            user_doc = tablesdb.create_row(
                 database_id=settings.APPWRITE_DATABASE_ID,
                 table_id=settings.COLLECTION_USERS,
                 row_id=user_id,
@@ -98,7 +98,7 @@ class AuthService:
 
             user_id = session['userId']
 
-            user_doc = tablesdb.get_Row(
+            user_doc = tablesdb.get_row(
                 database_id=settings.APPWRITE_DATABASE_ID,
                 table_id=settings.COLLECTION_USERS,
                 row_id=user_id
@@ -139,7 +139,7 @@ class AuthService:
     async def get_current_user(user_id: str) -> UserResponse:
         """Get current user details"""
         try:
-            user_doc = tablesdb.get_Row(
+            user_doc = tablesdb.get_row(
                 database_id=settings.APPWRITE_DATABASE_ID,
                 table_id=settings.COLLECTION_USERS,
                 row_id=user_id
